@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Info, Calendar, User, Mail, Phone, Tag, Loader, Check, ChevronLeft } from 'lucide-react';
+import { Info, Calendar, User, Mail, Phone, Tag, Loader, Check, ChevronLeft, Building, Landmark, Hash } from 'lucide-react';
 
 const SchemeSubmission = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
     provider: '',
+    // Provider-specific fields
+    departmentName: '', // For Government
+    ifscCode: '',       // For Bank
+    gstNumber: '',      // For Corporate
+    // ---
     organizationName: '',
     contactName: '',
     contactEmail: '',
@@ -32,10 +37,22 @@ const SchemeSubmission = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+
+    setFormData(prev => {
+        const newFormData = { ...prev, [name]: value };
+        // If the provider is changed, reset the specific fields and their errors
+        if (name === 'provider') {
+            newFormData.gstNumber = '';
+            newFormData.departmentName = '';
+            newFormData.ifscCode = '';
+
+            setErrors(currentErrors => {
+                const { gstNumber, departmentName, ifscCode, ...rest } = currentErrors;
+                return rest;
+            });
+        }
+        return newFormData;
+    });
     
     // Clear error for this field if it exists
     if (errors[name]) {
@@ -71,6 +88,31 @@ const SchemeSubmission = () => {
       newErrors.website = 'Please enter a valid website URL';
     }
 
+    // --- Semi-Authentication Validation ---
+    switch (formData.provider) {
+        case 'government':
+            if (!formData.departmentName.trim()) {
+                newErrors.departmentName = 'Department name is required for government providers.';
+            }
+            break;
+        case 'bank':
+            if (!formData.ifscCode.trim()) {
+                newErrors.ifscCode = 'IFSC code is required for bank providers.';
+            } else if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(formData.ifscCode.toUpperCase())) {
+                newErrors.ifscCode = 'Please enter a valid 11-character IFSC code.';
+            }
+            break;
+        case 'corporate':
+            if (!formData.gstNumber.trim()) {
+                newErrors.gstNumber = 'GST Number is required for corporate providers.';
+            } else if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(formData.gstNumber.toUpperCase())) {
+                newErrors.gstNumber = 'Please enter a valid 15-character GST number.';
+            }
+            break;
+        default:
+            break;
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -79,7 +121,7 @@ const SchemeSubmission = () => {
     e.preventDefault();
     
     if (!validateForm()) {
-      const firstErrorField = Object.keys(errors)[0];
+      const firstErrorField = Object.keys(errors)[0] || Object.keys(validateForm())[0];
       if (firstErrorField) {
         const element = document.getElementsByName(firstErrorField)[0];
         if (element) {
@@ -92,6 +134,7 @@ const SchemeSubmission = () => {
     setIsSubmitting(true);
     
     try {
+      console.log("Submitting Form Data:", formData);
       await new Promise(resolve => setTimeout(resolve, 2000));
       setIsSubmitted(true);
     } catch (error) {
@@ -128,6 +171,60 @@ const SchemeSubmission = () => {
       </div>
     );
   }
+
+  const renderProviderSpecificField = () => {
+    switch(formData.provider) {
+        case 'government':
+            return (
+                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 dark:sm:border-gray-700 sm:pt-5">
+                    <label htmlFor="departmentName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 sm:mt-px sm:pt-2">
+                    Department Name *
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2 relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Landmark className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <input type="text" name="departmentName" id="departmentName" value={formData.departmentName} onChange={handleInputChange} className={`${inputBaseClasses} ${inputIconClasses} ${errors.departmentName ? inputErrorClasses : ''}`} placeholder="e.g., Department of Agriculture" />
+                        {errors.departmentName && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.departmentName}</p>}
+                    </div>
+                </div>
+            );
+        case 'bank':
+            return (
+                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 dark:sm:border-gray-700 sm:pt-5">
+                    <label htmlFor="ifscCode" className="block text-sm font-medium text-gray-700 dark:text-gray-300 sm:mt-px sm:pt-2">
+                    Bank Branch IFSC *
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2 relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Hash className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <input type="text" name="ifscCode" id="ifscCode" value={formData.ifscCode} onChange={handleInputChange} className={`${inputBaseClasses} ${inputIconClasses} ${errors.ifscCode ? inputErrorClasses : ''}`} placeholder="Enter the 11-digit IFSC code" />
+                        {errors.ifscCode && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.ifscCode}</p>}
+                    </div>
+                </div>
+            );
+        case 'corporate':
+            return (
+                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 dark:sm:border-gray-700 sm:pt-5">
+                    <label htmlFor="gstNumber" className="block text-sm font-medium text-gray-700 dark:text-gray-300 sm:mt-px sm:pt-2">
+                    GST Number *
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2 relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Building className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <input type="text" name="gstNumber" id="gstNumber" value={formData.gstNumber} onChange={handleInputChange} className={`${inputBaseClasses} ${inputIconClasses} ${errors.gstNumber ? inputErrorClasses : ''}`} placeholder="Enter the 15-character GSTIN" />
+                        {errors.gstNumber && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.gstNumber}</p>}
+                    </div>
+                </div>
+            );
+        case 'event': // No extra field for event, but you could add one here if needed
+        default:
+            return null;
+    }
+  };
+
 
   return (
     <div className="py-8 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
@@ -214,6 +311,9 @@ const SchemeSubmission = () => {
                   {errors.provider && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.provider}</p>}
                 </div>
               </div>
+              
+              {/* --- RENDER PROVIDER-SPECIFIC FIELD --- */}
+              {renderProviderSpecificField()}
               
               {/* Other fields updated with the new structure */}
 
