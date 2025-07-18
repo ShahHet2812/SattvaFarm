@@ -8,7 +8,6 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [agreeTerms, setAgreeTerms] = useState(false);
   const [passwordError, setPasswordError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { register, error } = useAuth();
@@ -30,7 +29,8 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!validatePassword() || !agreeTerms) {
+    // Validation no longer checks for agreeTerms
+    if (!validatePassword()) {
       return;
     }
     
@@ -163,24 +163,12 @@ const Register = () => {
             </div>
           </div>
 
-          <div className="flex items-center">
-            <input
-              id="agree-terms"
-              name="agree-terms"
-              type="checkbox"
-              checked={agreeTerms}
-              onChange={(e) => setAgreeTerms(e.target.checked)}
-              className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-            />
-            <label htmlFor="agree-terms" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-              I agree to the <a href="#" className="text-green-600 hover:text-green-500">Terms and Conditions</a> and <a href="#" className="text-green-600 hover:text-green-500">Privacy Policy</a>
-            </label>
-          </div>
+          {/* Terms and conditions checkbox removed */}
 
           <div>
             <button
               type="submit"
-              disabled={isLoading || !agreeTerms}
+              disabled={isLoading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent rounded-md font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200 disabled:bg-green-400 disabled:cursor-not-allowed"
             >
               {isLoading ? (

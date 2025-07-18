@@ -48,7 +48,7 @@ const Footer = () => {
           </div>
 
           {/* Resources */}
-          <div>
+          {/* <div>
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">
               Resources
             </h3>
@@ -74,7 +74,7 @@ const Footer = () => {
                 </a>
               </li>
             </ul>
-          </div>
+          </div> */}
 
           {/* Contact */}
           <div>
@@ -84,29 +84,15 @@ const Footer = () => {
             <ul className="mt-4 space-y-2">
               <li className="flex items-start">
                 <MapPin className="h-5 w-5 text-green-600 dark:text-green-400 mr-2 flex-shrink-0" />
-                <span className="text-gray-600 dark:text-gray-300 text-sm">123 Farm Street, Agriculture District, Country</span>
+                <span className="text-gray-600 dark:text-gray-300 text-sm">L.J Campus,Sarkhej-Okaf,Ahmedabad</span>
               </li>
               <li className="flex items-center">
                 <Phone className="h-5 w-5 text-green-600 dark:text-green-400 mr-2" />
-                <span className="text-gray-600 dark:text-gray-300 text-sm">+1 (555) 123-4567</span>
+                <span className="text-gray-600 dark:text-gray-300 text-sm">(+91)6354496191</span>
               </li>
               <li className="flex items-center">
                 <Mail className="h-5 w-5 text-green-600 dark:text-green-400 mr-2" />
-                <span className="text-gray-600 dark:text-gray-300 text-sm">support@agrifarm.com</span>
-              </li>
-              <li className="flex items-center mt-4 space-x-3">
-                <a href="#" className="text-gray-500 hover:text-green-600 dark:text-gray-400 dark:hover:text-green-400">
-                  <Facebook className="h-5 w-5" />
-                </a>
-                <a href="#" className="text-gray-500 hover:text-green-600 dark:text-gray-400 dark:hover:text-green-400">
-                  <Twitter className="h-5 w-5" />
-                </a>
-                <a href="#" className="text-gray-500 hover:text-green-600 dark:text-gray-400 dark:hover:text-green-400">
-                  <Instagram className="h-5 w-5" />
-                </a>
-                <a href="#" className="text-gray-500 hover:text-green-600 dark:text-gray-400 dark:hover:text-green-400">
-                  <Youtube className="h-5 w-5" />
-                </a>
+                <span className="text-gray-600 dark:text-gray-300 text-sm">mokshkothari@gmail.com</span>
               </li>
             </ul>
           </div>

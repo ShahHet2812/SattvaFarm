@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Upload, BookOpen, BarChart4, Leaf } from 'lucide-react';
+import AnimatedStat from '../components/common/AnimatedStat'; // Import the new component
 
 const Home = () => {
   return (
@@ -124,22 +125,10 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <p className="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">10,000+</p>
-              <p className="text-gray-600 dark:text-gray-300">Registered Farmers</p>
-            </div>
-            <div className="text-center">
-              <p className="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">500+</p>
-              <p className="text-gray-600 dark:text-gray-300">Agricultural Schemes</p>
-            </div>
-            <div className="text-center">
-              <p className="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">1,000+</p>
-              <p className="text-gray-600 dark:text-gray-300">Knowledge Articles</p>
-            </div>
-            <div className="text-center">
-              <p className="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">30+</p>
-              <p className="text-gray-600 dark:text-gray-300">Countries Served</p>
-            </div>
+            <AnimatedStat end={10000} label="Registered Farmers" />
+            <AnimatedStat end={500} label="Agricultural Schemes" />
+            <AnimatedStat end={1000} label="Knowledge Articles" />
+            <AnimatedStat end={30} label="Countries Served" />
           </div>
         </div>
       </section>
